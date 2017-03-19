@@ -29,12 +29,14 @@ class jm_LiquidCrystal_I2C : public LiquidCrystal_I2C {
 //private:
 protected:
 
-	char str[12];
+	char buf[12]; // +0.123456789
 	int len;
 
-	int str_u32( uint32_t u32 );
-	int str_s32( uint32_t s32 );
-	int str_rjprint( int num ); // right justified print
+	int buf_u32( uint32_t u32 );
+	int buf_s32( uint32_t s32 );
+	int buf_u32f( uint32_t u32, int nfrac );
+	int buf_s32f( int32_t value, int nfrac );
+	int buf_rjprint( int num ); // right justified print
 
 public:
 
@@ -72,7 +74,14 @@ public:
 	int print_h4( uint8_t value );
 	int print_h8( uint8_t value );
 	int print_h16( uint16_t value );
+	int print_h24( uint32_t value );
 	int print_h32( uint32_t value );
+
+	int print_u32f( uint32_t value, int nfrac );
+	int print_u32f( uint32_t value, int nfrac, int nprint );
+
+	int print_s32f( int32_t value, int nfrac );
+	int print_s32f( int32_t value, int nfrac, int nprint );
 };
 
 // -----------------------------------------------------------------------------

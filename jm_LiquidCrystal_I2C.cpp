@@ -8,24 +8,51 @@
 
 // -----------------------------------------------------------------------------
 
-	int jm_LiquidCrystal_I2C::str_u32( uint32_t u32 )
+	int jm_LiquidCrystal_I2C::buf_u32( uint32_t u32 )
 	{
-		len = snprintf( str, 12, "%lu", u32 );
+		len = snprintf( buf, 12, "%lu", u32 );
 		return len;
 	}
 
-	int jm_LiquidCrystal_I2C::str_s32( uint32_t s32 )
+	int jm_LiquidCrystal_I2C::buf_s32( uint32_t s32 )
 	{
 		if (s32)
-			len = snprintf( str, 12, "%+li", s32 );
+			len = snprintf( buf, 12, "%+li", s32 );
 		else
-			len = snprintf( str, 12, "0" );
+			len = snprintf( buf, 12, "0" );
 		return len;
 	}
 
-	int jm_LiquidCrystal_I2C::str_rjprint( int num ) // right justification print
+	int jm_LiquidCrystal_I2C::buf_u32f( uint32_t u32, int nfrac )
 	{
-		return ( print_spaces( (num-len) >= 0 ? (num-len) : 0 ) + print( str ) );
+		buf_u32(u32);
+		if (len > nfrac) {
+			memmove( &buf[len-nfrac+1], &buf[len-nfrac], nfrac );
+			len++;
+		} else {
+			memmove( &buf[nfrac+1+1-len], &buf[0], len );
+			memset( &buf[0], '0', nfrac+1+1-len );
+			len = nfrac+1+1;
+		}
+		buf[len-nfrac-1] = '.';
+		return len;
+	}
+
+	int jm_LiquidCrystal_I2C::buf_s32f( int32_t value, int nfrac )
+	{
+		buf_u32f( abs(value), nfrac );
+		if (value) {
+			memmove( &buf[1], &buf[0], len );
+			buf[0] = sign(value)?'+':'-';
+			len++;
+		}
+		return len;
+	}
+
+	int jm_LiquidCrystal_I2C::buf_rjprint( int num ) // right justification print
+	{
+//		return ( print_spaces( (num-len) >= 0 ? (num-len) : 0 ) + print( buf ) );
+		return ( print_spaces( (num-len) >= 0 ? (num-len) : 0 ) + write( buf, len ) );
 	}
 
 // -----------------------------------------------------------------------------
@@ -55,8 +82,7 @@
 
 	int jm_LiquidCrystal_I2C::print_space()
 	{
-		print(' ');
-		return 1;
+		return print(' ');
 	}
 
 	int jm_LiquidCrystal_I2C::print_spaces( int num )
@@ -129,28 +155,26 @@
 
 	int jm_LiquidCrystal_I2C::print_u32( uint32_t value )
 	{
-		str_u32( value );
-		return str_rjprint( 10 );
+		return print_u32( value, 10 );
 	}
 
 	int jm_LiquidCrystal_I2C::print_u32( uint32_t value, int nprint )
 	{
-		str_u32( value );
-		return str_rjprint( nprint );
+		buf_u32( value );
+		return buf_rjprint( nprint );
 	}
 
 // -----------------------------------------------------------------------------
 
 	int jm_LiquidCrystal_I2C::print_s32( int32_t value )
 	{
-		str_s32( value );
-		return str_rjprint( 10+1 );
+		return print_s32( value, 10+1 );
 	}
 
 	int jm_LiquidCrystal_I2C::print_s32( int32_t value, int nprint )
 	{
-		str_s32( value );
-		return str_rjprint( nprint );
+		buf_s32( value );
+		return buf_rjprint( nprint );
 	}
 
 // -----------------------------------------------------------------------------
@@ -171,6 +195,11 @@
 		return print_h8( (uint8_t)(value>>8) ) + print_h8( (uint8_t)(value>>0) );
 	}
 
+	int jm_LiquidCrystal_I2C::print_h24( uint32_t value )
+	{
+		return print_h8( (uint8_t)(value>>16) ) + print_h16( (uint16_t)(value>>0) );
+	}
+
 	int jm_LiquidCrystal_I2C::print_h32( uint32_t value )
 	{
 		return print_h16( (uint16_t)(value>>16) ) + print_h16( (uint16_t)(value>>0) );
@@ -178,3 +207,30 @@
 
 // -----------------------------------------------------------------------------
 
+	int jm_LiquidCrystal_I2C::print_u32f( uint32_t value, int nfrac )
+	{
+		return print_u32f( value, nfrac, 10+1 );
+	}
+
+	int jm_LiquidCrystal_I2C::print_u32f( uint32_t value, int nfrac, int nprint )
+	{
+		buf_u32f( value, nfrac );
+		return buf_rjprint( nprint );
+	}
+
+// -----------------------------------------------------------------------------
+
+	int jm_LiquidCrystal_I2C::print_s32f( int32_t value, int nfrac )
+	{
+		return print_s32f( value, nfrac, 10+1+1 );
+	}
+
+	int jm_LiquidCrystal_I2C::print_s32f( int32_t value, int nfrac, int nprint )
+	{
+		buf_s32f( value, nfrac );
+		return buf_rjprint( nprint );
+	}
+
+// -----------------------------------------------------------------------------
+
+//	END.

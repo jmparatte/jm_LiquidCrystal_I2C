@@ -35,7 +35,7 @@ void loop()
 	int32_t rand32 = -2147483648+random()+random();
 	uint32_t time32 = millis();
 	static char c = 0x00;
-
+#if 0
 	lcd.set_cursor( 0, 0 );
 	lcd.print_s32( rand32 ); // 11 chars
 	lcd.print_space();
@@ -45,7 +45,16 @@ void loop()
 	lcd.print_u32( time32 ); // 10 chars
 	lcd.print_space();
 	lcd.print_h32( time32 ); // 8 chars
+#else
+	lcd.set_cursor( 0, 0 );
+	lcd.print_space();
+	lcd.print_s32( rand32 ); // 11 chars
 
+	lcd.set_cursor( 0, 1 );
+//	lcd.print_u32f( time32, 4 ); // 10+1 chars
+//	lcd.print_u32f( (uint32_t)rand32, 9 ); // 10+1 chars
+	lcd.print_s32f( rand32, 9 ); // 10+1+1 chars
+#endif
 	lcd.set_cursor( 0, 2 );
 	lcd.print_h8( c );
 	lcd.print_space();
