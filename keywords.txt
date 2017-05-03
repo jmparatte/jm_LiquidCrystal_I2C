@@ -1,0 +1,47 @@
+#######################################
+# Syntax Coloring Map for jm_LiquidCrystal_I2C Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+jm_LiquidCrystal_I2C	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin		KEYWORD2
+
+clr_screen	KEYWORD2
+set_cursor	KEYWORD2
+
+print_space	KEYWORD2
+print_spaces	KEYWORD2
+
+print_sgn	KEYWORD2
+print_sign	KEYWORD2
+
+print_u8	KEYWORD2
+print_s8	KEYWORD2
+
+print_u16	KEYWORD2
+print_s16	KEYWORD2
+
+print_u32	KEYWORD2
+print_s32	KEYWORD2
+
+print_h4	KEYWORD2
+print_h8	KEYWORD2
+print_h16	KEYWORD2
+print_h24	KEYWORD2
+print_h32	KEYWORD2
+
+print_u32f	KEYWORD2
+print_s32f	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
