@@ -1,10 +1,13 @@
 
-#include <Wire.h>
+////#include <Wire.h>
+//#include <jm_Wire.h>
 #include <LiquidCrystal_I2C.h>
+//#include "LiquidCrystal_I2C.h"
 
 // -----------------------------------------------------------------------------
 
 #include <jm_LiquidCrystal_I2C.h>
+//#include "jm_LiquidCrystal_I2C.h"
 
 // -----------------------------------------------------------------------------
 
@@ -14,7 +17,8 @@
 		return len;
 	}
 
-	int jm_LiquidCrystal_I2C::buf_s32( uint32_t s32 )
+//	int jm_LiquidCrystal_I2C::buf_s32( uint32_t s32 )
+	int jm_LiquidCrystal_I2C::buf_s32( int32_t s32 )
 	{
 		if (s32)
 			len = snprintf( buf, 12, "%+li", s32 );
@@ -40,7 +44,8 @@
 
 	int jm_LiquidCrystal_I2C::buf_s32f( int32_t value, int nfrac )
 	{
-		buf_u32f( abs(value), nfrac );
+//		buf_u32f( abs(value), nfrac );
+		buf_u32f( (value<0?-value:+value), nfrac );
 		if (value) {
 			memmove( &buf[1], &buf[0], len );
 			buf[0] = sign(value)?'+':'-';

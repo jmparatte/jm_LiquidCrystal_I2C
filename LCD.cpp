@@ -32,17 +32,12 @@
 // 2012.03.29 bperrybap - changed comparision to use LCD_5x8DOTS rather than 0
 // @author F. Malpartida - fmalpartida@gmail.com
 // ---------------------------------------------------------------------------
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
+//#include <stdio.h>
+//#include <string.h>
+//#include <inttypes.h>
 
-#if (ARDUINO <  100)
-#include <WProgram.h>
-#else
 #include <Arduino.h>
-#endif
 
-//extern "C" void __cxa_pure_virtual() { while (1); }
 #include "LCD.h"
 
 
@@ -92,42 +87,54 @@ void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 		_displayfunction |= LCD_5x10DOTS;
 	}
 
+	// HITACHI HD44780U Datasheet
+
 	// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
-	// according to datasheet, we need at least 40ms after power rises above 2.7V
-	// before sending commands. Arduino can turn on way before 4.5V so we'll wait
-	// 50
-	// ---------------------------------------------------------------------------
-	delay (100); // 100ms delay
+	// ================================================
 
-	//put the LCD into 4 bit or 8 bit mode
-	// -------------------------------------
-	if (! (_displayfunction & LCD_8BITMODE))
+	// [Wait for more than 15 ms after VCC rises to 4.5 V]
+	// (Wait for more than 40 ms after VCC rises to 2.7 V)
+
+	// To be compatible with all kinds of Arduino voltages,
+	// we need at least 40ms after power rises above 2.7V
+	// before sending commands.
+	wait_us(50000); // Wait for more than 40 ms after VCC rises to 2.7 V
+
+	// Init the LCD in 4-Bit or 8-Bit mode
+	// -----------------------------------
+	if (! (_displayfunction & LCD_8BITMODE)) // 4-Bit mode ?
 	{
-		// this is according to the hitachi HD44780 datasheet
-		// figure 24, pg 46
+		// Figure 24 4-Bit Interface
 
-		// we start in 8bit mode, try to set 4 bit mode
-		// Special case of "Function Set"
-		send_vm(0x03, FOUR_BITS);
-		wait_us(4500); // wait min 4.1ms
+		// LCD starts in 8-Bit mode, try to set 4-Bit mode
 
-		// second try
-		send_vm ( 0x03, FOUR_BITS );
-		wait_us(150); // wait min 100us
+		// [BF cannot be checked before this instruction.]
+		send_vm( 0x3, LCD_MODE_4BIT );
+		// Function set (Interface is 8 bits long.)
+		wait_us(4500); // Wait for more than 4.1 ms
 
-		// third go!
-		send_vm( 0x03, FOUR_BITS );
-		wait_us(150); // wait min of 100us
+		// [BF cannot be checked before this instruction]
+		send_vm ( 0x3, LCD_MODE_4BIT );
+		// Function set (Interface is 8 bits long.)
+		wait_us(150); // Wait for more than 100 us
 
-		// finally, set to 4-bit interface
-		send_vm ( 0x02, FOUR_BITS );
-		wait_us(150); // wait min of 100us
+		// [BF cannot be checked before this instruction]
+		send_vm( 0x3, LCD_MODE_4BIT );
+		// Function set (Interface is 8 bits long.)
+		wait_us(150); // Wait for more than 100 us
 
+		// BF can be checked after the following instructions.
+		// When BF is not checked, the waiting time between
+		// instructions is longer than the execution instuction
+		// time. (See Table 6.)
+		send_vm ( 0x2, LCD_MODE_4BIT );
+		wait_us(150); // Wait for more than 100 us
+		// Function set  (Set interface to be 4 bits long.)
+		// Interface is 8 bits in length
 	}
 	else
 	{
-		// this is according to the hitachi HD44780 datasheet
-		// page 45 figure 23
+		// Figure 23 8-Bit Interface
 
 		// Send function set command sequence
 		command(LCD_FUNCTIONSET | _displayfunction);
@@ -143,7 +150,10 @@ void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 
 	}
 
-	// finally, set # lines, font size, etc.
+	// Function set  (Interface is 4 bits long.  Specify the
+	// number of display lines and character font.)
+	// The number of display lines and character font
+	// cannot be changed after this point.
 	command(LCD_FUNCTIONSET | _displayfunction);
 	wait_us ( 60 );  // wait more
 
@@ -160,7 +170,6 @@ void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 	command(LCD_ENTRYMODESET | _displaymode);
 
 	backlight();
-
 }
 
 // Common LCD Commands
@@ -355,21 +364,21 @@ void LCD::off ( void )
 // ---------------------------------------------------------------------------
 void LCD::command(uint8_t value)
 {
-	send_vm(value, COMMAND);
+	send_vm(value, LCD_SEND_CMD);
 }
 
-#if (ARDUINO <  100)
-void LCD::write(uint8_t value)
-{
-	send_vm(value, DATA);
-}
-#else
+//#if (ARDUINO <  100)
+//void LCD::write(uint8_t value)
+//{
+//	send_vm(value, LCD_SEND_DATA);
+//}
+//#else
 size_t LCD::write(uint8_t value)
 {
-	send_vm(value, DATA);
-	return 1;				 // assume OK
+	send_vm(value, LCD_SEND_DATA);
+	return 1;				 // 1 byte sent
 }
-#endif
+//#endif
 
 void LCD::send_vm(uint8_t value, uint8_t mode)
 {
@@ -382,7 +391,7 @@ void LCD::send_vm(uint8_t value, uint8_t mode)
 	send(value, mode);
 }
 
-void LCD::wait_us( int us )
+void LCD::wait_us(uint16_t us)
 {
 //	Serial.print(' ');
 //	Serial.print('W');

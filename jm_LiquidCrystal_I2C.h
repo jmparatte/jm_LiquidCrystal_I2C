@@ -7,8 +7,10 @@
 #ifndef _jm_LiquidCrystal_I2C_h
 #define _jm_LiquidCrystal_I2C_h
 
-#include <Wire.h>
+////#include <Wire.h>
+//#include <jm_Wire.h>
 #include <LiquidCrystal_I2C.h>
+//#include "LiquidCrystal_I2C.h"
 
 #ifndef sgn
 template <typename T> int sgn(T val) {
@@ -33,7 +35,8 @@ protected:
 	int len;
 
 	int buf_u32( uint32_t u32 );
-	int buf_s32( uint32_t s32 );
+//	int buf_s32( uint32_t s32 );
+	int buf_s32( int32_t s32 );
 	int buf_u32f( uint32_t u32, int nfrac );
 	int buf_s32f( int32_t value, int nfrac );
 	int buf_rjprint( int num ); // right justified print

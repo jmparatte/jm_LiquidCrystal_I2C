@@ -28,10 +28,9 @@
 // ---------------------------------------------------------------------------
 #ifndef LiquidCrystal_I2C_h
 #define LiquidCrystal_I2C_h
-#include <inttypes.h>
-#include <Print.h>
 
-#include <jm_Scheduler.h>
+//#include <inttypes.h>
+//#include <Print.h>
 
 #include "I2CIO.h"
 #include "LCD.h"
@@ -121,12 +120,12 @@ public:
 	 Users should never call this method.
 
 	 @param		value[in] Value to send to the LCD.
-	 @param		mode[in] DATA - write to the LCD CGRAM, COMMAND - write a
+	 @param		mode[in] LCD_SEND_DATA - write to the LCD CGRAM, LCD_SEND_CMD - write a
 	 command to the LCD.
 	 */
 	virtual void send(uint8_t value, uint8_t mode);
 
-	virtual void wait(int us);
+	virtual void wait(uint16_t us);
 
 	/*!
 	 @function
@@ -182,7 +181,7 @@ public:
 	 @discussion Writes 4 bits (the least significant) to the LCD control data lines.
 	 @param		value[in] Value to write to the LCD
 	 @param		more[in]  Value to distinguish between command and data.
-	 COMMAND == command, DATA == data.
+	 LCD_SEND_CMD == command, LCD_SEND_DATA == data.
 	 */
 	void write4bits(uint8_t value, uint8_t mode);
 
@@ -205,10 +204,5 @@ public:
 	uint8_t _data_pins[4];	  // LCD data lines
 
 };
-
-#if 0
-#else
-extern void lcd_i2c_write(uint8_t data);
-#endif
 
 #endif

@@ -27,13 +27,14 @@
 //
 // @author F. Malpartida - fmalpartida@gmail.com
 // ---------------------------------------------------------------------------
-#if (ARDUINO <  100)
-#include <WProgram.h>
-#else
+//#if (ARDUINO <  100)
+//#include <WProgram.h>
+//#else
 #include <Arduino.h>
-#endif
-#include <inttypes.h>
-#include "I2CIO.h"
+//#endif
+//#include <inttypes.h>
+
+//#include "I2CIO.h"
 #include "LiquidCrystal_I2C.h"
 
 // CONSTANT  definitions
@@ -243,9 +244,9 @@ void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode)
 	// longer that what is needed both for toggling and enable pin an to execute
 	// the command.
 
-	if ( mode == FOUR_BITS )
+	if (mode == LCD_MODE_4BIT)
 	{
-		write4bits( (value & 0x0F), COMMAND );
+		write4bits( (value & 0x0F), LCD_SEND_CMD );
 	}
 	else
 	{
@@ -273,7 +274,7 @@ void LiquidCrystal_I2C::write4bits ( uint8_t value, uint8_t mode )
 
 	// Is it a command or data
 	// -----------------------
-	if ( mode == DATA )
+	if ( mode == LCD_SEND_DATA )
 	{
 		mode = _Rs;
 	}
@@ -286,26 +287,30 @@ void LiquidCrystal_I2C::write4bits ( uint8_t value, uint8_t mode )
 // pulseEnable
 void LiquidCrystal_I2C::pulseEnable (uint8_t data)
 {
-//Serial.print(' ');
+//Serial.print('d');
 //Serial.print(data);
+//Serial.print(';');
 
 #if 0
 	_i2cio.write (data | _En);	// En HIGH
+wait(200);
 	_i2cio.write (data & ~_En);  // En LOW
+wait(200);
 #else
-	lcd_i2c_write(data);
+	_i2cio.write (data | _En);	// En HIGH
+	_i2cio.write (data & ~_En);  // En LOW
 #endif
 }
 
-void LiquidCrystal_I2C::wait(int us)
+void LiquidCrystal_I2C::wait(uint16_t us)
 {
-//Serial.print(' ');
-//Serial.print('W');
+//Serial.print('w');
 //Serial.print(us);
+//Serial.print(';');
+
 #if 0
-	delayMicroseconds( us );
+	delayMicroseconds( us	 );
 #else
-	lcd_i2c_write(0xFF);
-	lcd_i2c_write((us + (20 - 1))/20);
+	_i2cio.wait(us);
 #endif
 }
