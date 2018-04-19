@@ -1,16 +1,13 @@
 
-// (https://hmario.home.xs4all.nl/arduino/LiquidCrystal_I2C/)
-// https://arduino-info.wikispaces.com/LCD-Blue-I2C
+// (https://hmario.home.xs4all.nl/arduino/fm_LiquidCrystal_I2C/)
+// https://arduino-info.wikispaces.com/fm_LCD-Blue-I2C
 // https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads
-// https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads/NewliquidCrystal_1.3.4.zip
+// https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads/NewliquidCrystal_1.3.5.zip
 
 #ifndef _jm_LiquidCrystal_I2C_h
 #define _jm_LiquidCrystal_I2C_h
 
-////#include <Wire.h>
-//#include <jm_Wire.h>
-#include <LiquidCrystal_I2C.h>
-//#include "LiquidCrystal_I2C.h"
+#include <fm_LiquidCrystal_I2C.h>
 
 #ifndef sgn
 template <typename T> int sgn(T val) {
@@ -26,16 +23,15 @@ template <typename T> int sign(T val) {
 
 // -----------------------------------------------------------------------------
 
-class jm_LiquidCrystal_I2C : public LiquidCrystal_I2C {
+class jm_LiquidCrystal_I2C : public fm_LiquidCrystal_I2C {
 
-//private:
+private:
 protected:
 
 	char buf[12]; // +0.123456789
 	int len;
 
 	int buf_u32( uint32_t u32 );
-//	int buf_s32( uint32_t s32 );
 	int buf_s32( int32_t s32 );
 	int buf_u32f( uint32_t u32, int nfrac );
 	int buf_s32f( int32_t value, int nfrac );

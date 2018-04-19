@@ -12,7 +12,7 @@ jm_LiquidCrystal_I2C	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-begin		KEYWORD2
+begin	KEYWORD2
 
 clr_screen	KEYWORD2
 set_cursor	KEYWORD2

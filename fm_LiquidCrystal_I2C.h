@@ -9,14 +9,14 @@
 // Thread Safe: No
 // Extendable: Yes
 //
-// @file LiquidCrystal_I2C.h
+// @file fm_LiquidCrystal_I2C.h
 // This file implements a basic liquid crystal library that comes as standard
 // in the Arduino SDK but using an I2C IO extension board.
 //
 // @brief
 // This is a basic implementation of the LiquidCrystal library of the
 // Arduino SDK. The original library has been reworked in such a way that
-// this class implements the all methods to command an LCD based
+// this class implements the all methods to command an fm_LCD based
 // on the Hitachi HD44780 and compatible chipsets using I2C extension
 // backpacks such as the I2CLCDextraIO with the PCF8574* I2C IO Expander ASIC.
 //
@@ -26,17 +26,17 @@
 //
 // @author F. Malpartida - fmalpartida@gmail.com
 // ---------------------------------------------------------------------------
-#ifndef LiquidCrystal_I2C_h
-#define LiquidCrystal_I2C_h
+#ifndef fm_LiquidCrystal_I2C_h
+#define fm_LiquidCrystal_I2C_h
 
 //#include <inttypes.h>
 //#include <Print.h>
 
-#include "I2CIO.h"
-#include "LCD.h"
+#include "fm_I2CIO.h"
+#include "fm_LCD.h"
 
 
-class LiquidCrystal_I2C : public LCD
+class fm_LiquidCrystal_I2C : public fm_LCD
 {
 
 public:
@@ -45,59 +45,59 @@ public:
 	 @method
 	 @abstract	Class constructor.
 	 @discussion Initializes class variables and defines the I2C address of the
-	 LCD. The constructor does not initialize the LCD.
+	 fm_LCD. The constructor does not initialize the fm_LCD.
 
 	 @param		lcd_Addr[in] I2C address of the IO expansion module. For I2CLCDextraIO,
 	 the address can be configured using the on board jumpers.
 	 */
-	LiquidCrystal_I2C (uint8_t lcd_Addr);
+	fm_LiquidCrystal_I2C (uint8_t lcd_Addr);
 	// Constructor with backlight control
-	LiquidCrystal_I2C (uint8_t lcd_Addr, uint8_t backlighPin, t_backlighPol pol);
+	fm_LiquidCrystal_I2C (uint8_t lcd_Addr, uint8_t backlighPin, t_backlighPol pol);
 
 	/*!
 	 @method
 	 @abstract	Class constructor.
 	 @discussion Initializes class variables and defines the I2C address of the
-	 LCD. The constructor does not initialize the LCD.
+	 fm_LCD. The constructor does not initialize the fm_LCD.
 
 	 @param		lcd_Addr[in] I2C address of the IO expansion module. For I2CLCDextraIO,
 	 the address can be configured using the on board jumpers.
-	 @param		En[in] LCD En (Enable) pin connected to the IO extender module
-	 @param		Rw[in] LCD Rw (Read/write) pin connected to the IO extender module
-	 @param		Rs[in] LCD Rs (Reset) pin connected to the IO extender module
+	 @param		En[in] fm_LCD En (Enable) pin connected to the IO extender module
+	 @param		Rw[in] fm_LCD Rw (Read/write) pin connected to the IO extender module
+	 @param		Rs[in] fm_LCD Rs (Reset) pin connected to the IO extender module
 	 */
-	LiquidCrystal_I2C( uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs);
+	fm_LiquidCrystal_I2C( uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs);
 	// Constructor with backlight control
-	LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
+	fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
 							uint8_t backlighPin, t_backlighPol pol);
 
 	/*!
 	 @method
 	 @abstract	Class constructor.
 	 @discussion Initializes class variables and defines the I2C address of the
-	 LCD. The constructor does not initialize the LCD.
+	 fm_LCD. The constructor does not initialize the fm_LCD.
 
 	 @param		lcd_Addr[in] I2C address of the IO expansion module. For I2CLCDextraIO,
 	 the address can be configured using the on board jumpers.
-	 @param		En[in] LCD En (Enable) pin connected to the IO extender module
-	 @param		Rw[in] LCD Rw (Read/write) pin connected to the IO extender module
-	 @param		Rs[in] LCD Rs (Reset) pin connected to the IO extender module
-	 @param		d4[in] LCD data 0 pin map on IO extender module
-	 @param		d5[in] LCD data 1 pin map on IO extender module
-	 @param		d6[in] LCD data 2 pin map on IO extender module
-	 @param		d7[in] LCD data 3 pin map on IO extender module
+	 @param		En[in] fm_LCD En (Enable) pin connected to the IO extender module
+	 @param		Rw[in] fm_LCD Rw (Read/write) pin connected to the IO extender module
+	 @param		Rs[in] fm_LCD Rs (Reset) pin connected to the IO extender module
+	 @param		d4[in] fm_LCD data 0 pin map on IO extender module
+	 @param		d5[in] fm_LCD data 1 pin map on IO extender module
+	 @param		d6[in] fm_LCD data 2 pin map on IO extender module
+	 @param		d7[in] fm_LCD data 3 pin map on IO extender module
 	 */
-	LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
+	fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
 							uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7 );
 	// Constructor with backlight control
-	LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
+	fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
 							uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
 							uint8_t backlighPin, t_backlighPol pol);
 	/*!
 	 @function
-	 @abstract	LCD initialization and associated HW.
-	 @discussion Initializes the LCD to a given size (col, row). This methods
-	 initializes the LCD, therefore, it MUST be called prior to using any other
+	 @abstract	fm_LCD initialization and associated HW.
+	 @discussion Initializes the fm_LCD to a given size (col, row). This methods
+	 initializes the fm_LCD, therefore, it MUST be called prior to using any other
 	 method from this class or parent class.
 
 	 The begin method can be overloaded if necessary to initialize any HW that
@@ -106,22 +106,22 @@ public:
 
 	 @param		cols[in] the number of columns that the display has
 	 @param		rows[in] the number of rows that the display has
-	 @param		charsize[in] size of the characters of the LCD: LCD_5x8DOTS or
+	 @param		charsize[in] size of the characters of the fm_LCD: LCD_5x8DOTS or
 	 LCD_5x10DOTS.
 	 */
 	virtual void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
 
 	/*!
 	 @function
-	 @abstract	Send a particular value to the LCD.
-	 @discussion Sends a particular value to the LCD for writing to the LCD or
-	 as an LCD command.
+	 @abstract	Send a particular value to the fm_LCD.
+	 @discussion Sends a particular value to the fm_LCD for writing to the fm_LCD or
+	 as an fm_LCD command.
 
 	 Users should never call this method.
 
-	 @param		value[in] Value to send to the LCD.
-	 @param		mode[in] LCD_SEND_DATA - write to the LCD CGRAM, LCD_SEND_CMD - write a
-	 command to the LCD.
+	 @param		value[in] Value to send to the fm_LCD.
+	 @param		mode[in] LCD_SEND_DATA - write to the fm_LCD CGRAM, LCD_SEND_CMD - write a
+	 command to the fm_LCD.
 	 */
 	virtual void send(uint8_t value, uint8_t mode);
 
@@ -139,8 +139,8 @@ public:
 
 	/*!
 	 @function
-	 @abstract	Switch-on/off the LCD backlight.
-	 @discussion Switch-on/off the LCD backlight.
+	 @abstract	Switch-on/off the fm_LCD backlight.
+	 @discussion Switch-on/off the fm_LCD backlight.
 	 The setBacklightPin has to be called before setting the backlight for
 	 this method to work. @see setBacklightPin.
 
@@ -152,8 +152,8 @@ public:
 
 	/*!
 	 @method
-	 @abstract	Initializes the LCD class
-	 @discussion Initializes the LCD class and IO expansion module.
+	 @abstract	Initializes the fm_LCD class
+	 @discussion Initializes the fm_LCD class and IO expansion module.
 	 */
 	int  init();
 
@@ -164,22 +164,22 @@ public:
 
 	 @param		lcd_Addr[in] I2C address of the IO expansion module. For I2CLCDextraIO,
 	 the address can be configured using the on board jumpers.
-	 @param		En[in] LCD En (Enable) pin connected to the IO extender module
-	 @param		Rw[in] LCD Rw (Read/write) pin connected to the IO extender module
-	 @param		Rs[in] LCD Rs (Reset) pin connected to the IO extender module
-	 @param		d4[in] LCD data 0 pin map on IO extender module
-	 @param		d5[in] LCD data 1 pin map on IO extender module
-	 @param		d6[in] LCD data 2 pin map on IO extender module
-	 @param		d7[in] LCD data 3 pin map on IO extender module
+	 @param		En[in] fm_LCD En (Enable) pin connected to the IO extender module
+	 @param		Rw[in] fm_LCD Rw (Read/write) pin connected to the IO extender module
+	 @param		Rs[in] fm_LCD Rs (Reset) pin connected to the IO extender module
+	 @param		d4[in] fm_LCD data 0 pin map on IO extender module
+	 @param		d5[in] fm_LCD data 1 pin map on IO extender module
+	 @param		d6[in] fm_LCD data 2 pin map on IO extender module
+	 @param		d7[in] fm_LCD data 3 pin map on IO extender module
 	 */
 	void config (uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
 					 uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7 );
 
 	/*!
 	 @method
-	 @abstract	Writes an 4 bit value to the LCD.
-	 @discussion Writes 4 bits (the least significant) to the LCD control data lines.
-	 @param		value[in] Value to write to the LCD
+	 @abstract	Writes an 4 bit value to the fm_LCD.
+	 @discussion Writes 4 bits (the least significant) to the fm_LCD control data lines.
+	 @param		value[in] Value to write to the fm_LCD
 	 @param		more[in]  Value to distinguish between command and data.
 	 LCD_SEND_CMD == command, LCD_SEND_DATA == data.
 	 */
@@ -187,7 +187,7 @@ public:
 
 	/*!
 	 @method
-	 @abstract	Pulse the LCD enable line (En).
+	 @abstract	Pulse the fm_LCD enable line (En).
 	 @discussion Sends a pulse of 1 uS to the Enable pin to execute an command
 	 or write operation.
 	 */
@@ -197,11 +197,11 @@ public:
 	uint8_t _Addr;				 // I2C Address of the IO expander
 	uint8_t _backlightPinMask; // Backlight IO pin mask
 	uint8_t _backlightStsMask; // Backlight status mask
-	I2CIO	_i2cio;				// I2CIO PCF8574* expansion module driver I2CLCDextraIO
-	uint8_t _En;					// LCD expander word for enable pin
-	uint8_t _Rw;					// LCD expander word for R/W pin
-	uint8_t _Rs;					// LCD expander word for Register Select pin
-	uint8_t _data_pins[4];	  // LCD data lines
+	fm_I2CIO	_i2cio;				// fm_I2CIO PCF8574* expansion module driver I2CLCDextraIO
+	uint8_t _En;					// fm_LCD expander word for enable pin
+	uint8_t _Rw;					// fm_LCD expander word for R/W pin
+	uint8_t _Rs;					// fm_LCD expander word for Register Select pin
+	uint8_t _data_pins[4];	  // fm_LCD data lines
 
 };
 

@@ -9,7 +9,7 @@
 // Thread Safe: No
 // Extendable: Yes
 //
-// @file I2CIO.h
+// @file fm_I2CIO.h
 // This file implements a basic IO library using the PCF8574 I2C IO Expander
 // chip.
 //
@@ -36,22 +36,16 @@ void lcd_i2c_wait(uint16_t us);
 //------------------------------------------------------------------------------
 
 #include <jm_LiquidCrystal_I2C.h>
-//#include "jm_LiquidCrystal_I2C.h"
 
 //------------------------------------------------------------------------------
 
-#include <Arduino.h>
-
-//#include <Wire.h>
 #include <jm_Wire.h>
 
-//#include <inttypes.h>
-
-#include "I2CIO.h"
+#include <fm_I2CIO.h>
 
 //------------------------------------------------------------------------------
 
-I2CIO::I2CIO ( )
+fm_I2CIO::fm_I2CIO ( )
 {
 	_i2cAddr	  = 0x0;
 	_dirMask	  = 0xFF;	 // mark all as INPUTs
@@ -65,7 +59,7 @@ I2CIO::I2CIO ( )
 
 //
 // begin
-int I2CIO::begin (  uint8_t i2cAddr )
+int fm_I2CIO::begin (  uint8_t i2cAddr )
 {
 	lcd_i2c_addr = i2cAddr;
 
@@ -88,7 +82,7 @@ int I2CIO::begin (  uint8_t i2cAddr )
 
 //
 // pinMode
-void I2CIO::pinMode ( uint8_t pin, uint8_t dir )
+void fm_I2CIO::pinMode ( uint8_t pin, uint8_t dir )
 {
 	if ( _initialised )
 	{
@@ -105,7 +99,7 @@ void I2CIO::pinMode ( uint8_t pin, uint8_t dir )
 
 //
 // portMode
-void I2CIO::portMode ( uint8_t dir )
+void fm_I2CIO::portMode ( uint8_t dir )
 {
 
 	if ( _initialised )
@@ -123,7 +117,7 @@ void I2CIO::portMode ( uint8_t dir )
 
 //
 // read
-uint8_t I2CIO::read ( void )
+uint8_t fm_I2CIO::read ( void )
 {
 	uint8_t retVal = 0;
 
@@ -142,7 +136,7 @@ uint8_t I2CIO::read ( void )
 
 //
 // write
-int I2CIO::write ( uint8_t value )
+int fm_I2CIO::write ( uint8_t value )
 {
 	int status = 0;
 
@@ -170,7 +164,7 @@ int I2CIO::write ( uint8_t value )
 
 
 
-void I2CIO::wait ( uint16_t us )
+void fm_I2CIO::wait ( uint16_t us )
 {
 #if 0
 	delayMicroseconds( us );
@@ -183,7 +177,7 @@ void I2CIO::wait ( uint16_t us )
 
 //
 // digitalRead
-uint8_t I2CIO::digitalRead ( uint8_t pin )
+uint8_t fm_I2CIO::digitalRead ( uint8_t pin )
 {
 	uint8_t pinVal = 0;
 
@@ -200,7 +194,7 @@ uint8_t I2CIO::digitalRead ( uint8_t pin )
 
 //
 // digitalWrite
-int I2CIO::digitalWrite ( uint8_t pin, uint8_t level )
+int fm_I2CIO::digitalWrite ( uint8_t pin, uint8_t level )
 {
 	uint8_t writeVal;
 	int status = 0;
@@ -229,7 +223,7 @@ int I2CIO::digitalWrite ( uint8_t pin, uint8_t level )
 //
 // PRIVATE METHODS
 // ---------------------------------------------------------------------------
-bool I2CIO::isAvailable (uint8_t i2cAddr)
+bool fm_I2CIO::isAvailable (uint8_t i2cAddr)
 {
 	int error;
 
@@ -247,7 +241,7 @@ bool I2CIO::isAvailable (uint8_t i2cAddr)
 
 //------------------------------------------------------------------------------
 
-bool I2CIO::yield_request()
+bool fm_I2CIO::yield_request()
 {
 	return (lcd_i2c_buffer_available() > 0);
 }
@@ -299,7 +293,104 @@ jm_Scheduler lcd_i2c_scheduler;
 
 uint8_t lcd_i2c_addr;
 
-void lcd_i2c_routine()
+#if 01
+
+void lcd_i2c_coroutine()
+{
+	static uint8_t state = 0;
+	static uint8_t data;
+
+	switch (state)
+	{
+
+	case_0:
+		state = 0;
+	case 0:
+
+//		if (lcd_i2c_buffer_available() == 0)
+//		{
+//			lcd_i2c_scheduler.stop();
+//
+//			break;
+//		}
+		if (lcd_i2c_buffer_available() == 0) {Serial.print(F("lcd_i2c_coroutine(0)")); for(;;);}
+
+		data = lcd_i2c_buffer_read();
+
+		if (data == 0xFF) // wait ?
+		{
+			uint16_t wait = 20*lcd_i2c_buffer_read();
+
+			lcd_i2c_scheduler.rearm_async( wait );
+
+			state = 3;
+
+			break;
+		}
+		else
+			goto case_1;
+
+	case_1:
+		state = 1;
+	case 1:
+
+		if (Wire.busy) {lcd_i2c_scheduler.rearm_async((1)*(8+1+1)*10); break;} // rearm quickly
+
+		Wire.busy = true;
+
+		if (!Wire.ready()) {Serial.print(F("lcd_i2c_coroutine(1)")); for(;;);}
+
+		Wire.beginTransmission( lcd_i2c_addr );
+		Wire.write( data );
+		Wire.endTransmission( true );
+
+		lcd_i2c_scheduler.rearm_async((1+2+2)*(8+1+1)*10);
+
+		state = 2;
+
+		break;
+
+	case 2:
+
+		if (!Wire.ready()) {Serial.print("lcd_i2c_coroutine(2)"); for(;;);}
+
+		Wire.busy = false;
+
+//		goto case_0;
+
+		if (lcd_i2c_buffer_available() == 0)
+		{
+			lcd_i2c_scheduler.stop();
+
+			state = 0;
+
+			break;
+		}
+
+		state = 0;
+
+		lcd_i2c_scheduler.rearm_async((1)*(8+1+1)*10);
+
+		break;
+
+	case 3:
+
+		if (lcd_i2c_buffer_available() == 0)
+		{
+			lcd_i2c_scheduler.stop();
+
+			state = 0;
+
+			break;
+		}
+		else
+			goto case_0;
+	}
+}
+
+#else
+
+void lcd_i2c_coroutine()
 {
 	if (lcd_i2c_buffer_available() == 0)
 	{
@@ -335,6 +426,7 @@ void lcd_i2c_routine()
 		lcd_i2c_scheduler.rearm_async( 300 );
 	}
 }
+#endif
 
 #if 01
 
@@ -348,7 +440,7 @@ void lcd_i2c_write(uint8_t data)
 
 	lcd_i2c_buffer_write(data);
 
-	if (!lcd_i2c_scheduler) lcd_i2c_scheduler.start( lcd_i2c_routine );
+	if (!lcd_i2c_scheduler) lcd_i2c_scheduler.start( lcd_i2c_coroutine );
 }
 
 void lcd_i2c_wait(uint16_t us)
@@ -362,7 +454,7 @@ void lcd_i2c_wait(uint16_t us)
 	lcd_i2c_buffer_write(0xFF);
 	lcd_i2c_buffer_write((us + (20 - 1))/20);
 
-	if (!lcd_i2c_scheduler) lcd_i2c_scheduler.start( lcd_i2c_routine );
+	if (!lcd_i2c_scheduler) lcd_i2c_scheduler.start( lcd_i2c_coroutine );
 }
 
 #else

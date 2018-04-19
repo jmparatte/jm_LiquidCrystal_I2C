@@ -11,15 +11,16 @@ Email: jean-marc@paratte.ch
 
 # jm_LiquidCrystal_I2C Arduino Library
 
-My enhanced LiquidCrystal_I2C Arduino Library 
+My enhanced fm_LiquidCrystal_I2C Arduino Library 
 
 ````
-2017-05-03: Initial commit.
+2018-04-19: v1.0.1 - Solve conflict with NewLiquidCrystal_1.3.5.
+2017-05-03: v1.0.0 - Initial commit.
 ````
 
-jm_LiquidCrystal_I2C is a fork of LiquidCrystal_I2C.h written by F. Malpartida.
+jm_LiquidCrystal_I2C is a fork of fm_LiquidCrystal_I2C.h written by F. Malpartida.
 
-My version is dedicated to the common LCD display 4x20 lines with an I2C interface.
+My version is dedicated to the common blue 4x20 lines LCD display I2C interfaced (address 0x3F).
 It is driven by jm_Scheduler and jm_Wire. 
 So all delay() functions have been replaced to allow real multitasking process.
 

@@ -9,7 +9,7 @@
 // Thread Safe: No
 // Extendable: Yes
 //
-// @file LCD.cpp
+// @file fm_LCD.cpp
 // This file implements a basic liquid crystal library that comes as standard
 // in the Arduino SDK.
 //
@@ -19,7 +19,7 @@
 // in the Arduino SDK in such a way that it simplifies its extension
 // to support other mechanism to communicate to LCDs such as I2C, Serial, SR, ...
 // The original library has been reworked in such a way that this will be
-// the base class implementing all generic methods to command an LCD based
+// the base class implementing all generic methods to command an fm_LCD based
 // on the Hitachi HD44780 and compatible chipsets.
 //
 // This base class is a pure abstract class and needs to be extended. As reference,
@@ -38,13 +38,13 @@
 
 #include <Arduino.h>
 
-#include "LCD.h"
+#include "fm_LCD.h"
 
 
 // CLASS CONSTRUCTORS
 // ---------------------------------------------------------------------------
 // Constructor
-LCD::LCD ()
+fm_LCD::fm_LCD ()
 {
 
 }
@@ -52,7 +52,7 @@ LCD::LCD ()
 // PUBLIC METHODS
 // ---------------------------------------------------------------------------
 // When the display powers up, it is configured as follows:
-// 0. LCD starts in 8 bit mode
+// 0. fm_LCD starts in 8 bit mode
 // 1. Display clear
 // 2. Function set:
 //	 DL = 1; 8-bit interface data
@@ -66,12 +66,12 @@ LCD::LCD ()
 //	 I/D = 1; Increment by 1
 //	 S = 0; No shift
 //
-// Note, however, that resetting the Arduino doesn't reset the LCD, so we
+// Note, however, that resetting the Arduino doesn't reset the fm_LCD, so we
 // can't assume that its in that state when a application starts (and the
 // LiquidCrystal constructor is called).
-// A call to begin() will reinitialize the LCD.
+// A call to begin() will reinitialize the fm_LCD.
 //
-void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
+void fm_LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 {
 	if (lines > 1)
 	{
@@ -100,13 +100,13 @@ void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 	// before sending commands.
 	wait_us(50000); // Wait for more than 40 ms after VCC rises to 2.7 V
 
-	// Init the LCD in 4-Bit or 8-Bit mode
+	// Init the fm_LCD in 4-Bit or 8-Bit mode
 	// -----------------------------------
 	if (! (_displayfunction & LCD_8BITMODE)) // 4-Bit mode ?
 	{
 		// Figure 24 4-Bit Interface
 
-		// LCD starts in 8-Bit mode, try to set 4-Bit mode
+		// fm_LCD starts in 8-Bit mode, try to set 4-Bit mode
 
 		// [BF cannot be checked before this instruction.]
 		send_vm( 0x3, LCD_MODE_4BIT );
@@ -161,7 +161,7 @@ void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 	_displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
 	display();
 
-	// clear the LCD
+	// clear the fm_LCD
 	clear();
 
 	// Initialize to default text direction (for romance languages)
@@ -172,21 +172,21 @@ void LCD::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 	backlight();
 }
 
-// Common LCD Commands
+// Common fm_LCD Commands
 // ---------------------------------------------------------------------------
-void LCD::clear()
+void fm_LCD::clear()
 {
 	command(LCD_CLEARDISPLAY);				 // clear display, set cursor position to zero
 	wait_us(HOME_CLEAR_EXEC);	 // this command is time consuming
 }
 
-void LCD::home()
+void fm_LCD::home()
 {
 	command(LCD_RETURNHOME);				 // set cursor position to zero
 	wait_us(HOME_CLEAR_EXEC);  // This command is time consuming
 }
 
-void LCD::setCursor(uint8_t col, uint8_t row)
+void fm_LCD::setCursor(uint8_t col, uint8_t row)
 {
 	const byte row_offsetsDef[]	= { 0x00, 0x40, 0x14, 0x54 }; // For regular LCDs
 	const byte row_offsetsLarge[] = { 0x00, 0x40, 0x10, 0x50 }; // For 16x4 LCDs
@@ -210,97 +210,97 @@ void LCD::setCursor(uint8_t col, uint8_t row)
 }
 
 // Turn the display on/off
-void LCD::noDisplay()
+void fm_LCD::noDisplay()
 {
 	_displaycontrol &= ~LCD_DISPLAYON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void LCD::display()
+void fm_LCD::display()
 {
 	_displaycontrol |= LCD_DISPLAYON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // Turns the underline cursor on/off
-void LCD::noCursor()
+void fm_LCD::noCursor()
 {
 	_displaycontrol &= ~LCD_CURSORON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
-void LCD::cursor()
+void fm_LCD::cursor()
 {
 	_displaycontrol |= LCD_CURSORON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // Turns on/off the blinking cursor
-void LCD::noBlink()
+void fm_LCD::noBlink()
 {
 	_displaycontrol &= ~LCD_BLINKON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void LCD::blink()
+void fm_LCD::blink()
 {
 	_displaycontrol |= LCD_BLINKON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // These commands scroll the display without changing the RAM
-void LCD::scrollDisplayLeft(void)
+void fm_LCD::scrollDisplayLeft(void)
 {
 	command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 
-void LCD::scrollDisplayRight(void)
+void fm_LCD::scrollDisplayRight(void)
 {
 	command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
-void LCD::leftToRight(void)
+void fm_LCD::leftToRight(void)
 {
 	_displaymode |= LCD_ENTRYLEFT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This is for text that flows Right to Left
-void LCD::rightToLeft(void)
+void fm_LCD::rightToLeft(void)
 {
 	_displaymode &= ~LCD_ENTRYLEFT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This method moves the cursor one space to the right
-void LCD::moveCursorRight(void)
+void fm_LCD::moveCursorRight(void)
 {
 	command(LCD_CURSORSHIFT | LCD_CURSORMOVE | LCD_MOVERIGHT);
 }
 
 // This method moves the cursor one space to the left
-void LCD::moveCursorLeft(void)
+void fm_LCD::moveCursorLeft(void)
 {
 	command(LCD_CURSORSHIFT | LCD_CURSORMOVE | LCD_MOVELEFT);
 }
 
 
 // This will 'right justify' text from the cursor
-void LCD::autoscroll(void)
+void fm_LCD::autoscroll(void)
 {
 	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'left justify' text from the cursor
-void LCD::noAutoscroll(void)
+void fm_LCD::noAutoscroll(void)
 {
 	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // Write to CGRAM of new characters
-void LCD::createChar(uint8_t location, uint8_t charmap[])
+void fm_LCD::createChar(uint8_t location, uint8_t charmap[])
 {
 	location &= 0x7;				// we only have 8 locations 0-7
 
@@ -315,7 +315,7 @@ void LCD::createChar(uint8_t location, uint8_t charmap[])
 }
 
 #ifdef __AVR__
-void LCD::createChar(uint8_t location, const char *charmap)
+void fm_LCD::createChar(uint8_t location, const char *charmap)
 {
 	location &= 0x7;	// we only have 8 memory locations 0-7
 
@@ -332,55 +332,55 @@ void LCD::createChar(uint8_t location, const char *charmap)
 
 //
 // Switch on the backlight
-void LCD::backlight ( void )
+void fm_LCD::backlight ( void )
 {
 	setBacklight(255);
 }
 
 //
 // Switch off the backlight
-void LCD::noBacklight ( void )
+void fm_LCD::noBacklight ( void )
 {
 	setBacklight(0);
 }
 
 //
-// Switch fully on the LCD (backlight and LCD)
-void LCD::on ( void )
+// Switch fully on the fm_LCD (backlight and fm_LCD)
+void fm_LCD::on ( void )
 {
 	display();
 	backlight();
 }
 
 //
-// Switch fully off the LCD (backlight and LCD)
-void LCD::off ( void )
+// Switch fully off the fm_LCD (backlight and fm_LCD)
+void fm_LCD::off ( void )
 {
 	noBacklight();
 	noDisplay();
 }
 
-// General LCD commands - generic methods used by the rest of the commands
+// General fm_LCD commands - generic methods used by the rest of the commands
 // ---------------------------------------------------------------------------
-void LCD::command(uint8_t value)
+void fm_LCD::command(uint8_t value)
 {
 	send_vm(value, LCD_SEND_CMD);
 }
 
 //#if (ARDUINO <  100)
-//void LCD::write(uint8_t value)
+//void fm_LCD::write(uint8_t value)
 //{
 //	send_vm(value, LCD_SEND_DATA);
 //}
 //#else
-size_t LCD::write(uint8_t value)
+size_t fm_LCD::write(uint8_t value)
 {
 	send_vm(value, LCD_SEND_DATA);
 	return 1;				 // 1 byte sent
 }
 //#endif
 
-void LCD::send_vm(uint8_t value, uint8_t mode)
+void fm_LCD::send_vm(uint8_t value, uint8_t mode)
 {
 //	Serial.print(' ');
 //	Serial.print('S');
@@ -391,7 +391,7 @@ void LCD::send_vm(uint8_t value, uint8_t mode)
 	send(value, mode);
 }
 
-void LCD::wait_us(uint16_t us)
+void fm_LCD::wait_us(uint16_t us)
 {
 //	Serial.print(' ');
 //	Serial.print('W');

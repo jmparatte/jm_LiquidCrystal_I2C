@@ -7,7 +7,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//#include <Wire.h>
 #include <jm_Wire.h>
 extern uint16_t twi_readFrom_timeout;
 extern uint16_t twi_writeTo_timeout;
@@ -17,7 +16,6 @@ extern bool twi_writeTo_wait;
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <jm_LiquidCrystal_I2C.h>
-//#include "jm_LiquidCrystal_I2C.h"
 
 jm_LiquidCrystal_I2C lcd;
 
@@ -36,10 +34,10 @@ const uint8_t charBitmap[8][8] = {
 
 jm_Scheduler lcd_demo_scheduler;
 
-void lcd_demo_routine()
+void lcd_demo_coroutine()
 {
-	Serial.print(F("loop"));
-	Serial.println();
+	static long count = -1;
+	Serial.println(++count);
 
 	int32_t rand32 = -2147483648+random()+random();
 	uint32_t time32 = millis();
@@ -114,10 +112,10 @@ void setup()
 		while (lcd._i2cio.yield_request()) jm_Scheduler::yield();
 	}
 
-	lcd_demo_scheduler.start(lcd_demo_routine, jm_Scheduler_time_read() + 1*TIMESTAMP_1SEC, 1*TIMESTAMP_1SEC);
+	lcd_demo_scheduler.start(lcd_demo_coroutine, jm_Scheduler_time_read() + 1*TIMESTAMP_1SEC, 1*TIMESTAMP_1SEC);
 }
 
 void loop()
 {
-	jm_Scheduler::cycle();
+	yield();
 }

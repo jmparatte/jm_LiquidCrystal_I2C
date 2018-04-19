@@ -9,7 +9,7 @@
 // Thread Safe: No
 // Extendable: Yes
 //
-// @file I2CIO.h
+// @file fm_I2CIO.h
 // This file implements a basic IO library using the PCF8574 I2C IO Expander
 // chip.
 //
@@ -24,8 +24,8 @@
 // @author F. Malpartida - fmalpartida@gmail.com
 // ---------------------------------------------------------------------------
 
-#ifndef _I2CIO_H_
-#define _I2CIO_H_
+#ifndef fm_I2CIO_h
+#define fm_I2CIO_h
 
 #include <inttypes.h>
 
@@ -33,12 +33,12 @@
 
 /*!
  @class
- @abstract	 I2CIO
+ @abstract	 fm_I2CIO
  @discussion  Library driver to control PCF8574 based ASICs. Implementing
  library calls to set/get port through I2C bus.
  */
 
-class I2CIO
+class fm_I2CIO
 {
 public:
 	/*!
@@ -46,7 +46,7 @@ public:
 	 @abstract	Constructor method
 	 @discussion Class constructor constructor.
 	 */
-	I2CIO ( );
+	fm_I2CIO ( );
 
 	/*!
 	 @method

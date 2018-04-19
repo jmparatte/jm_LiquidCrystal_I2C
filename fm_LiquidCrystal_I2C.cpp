@@ -9,14 +9,14 @@
 // Thread Safe: No
 // Extendable: Yes
 //
-// @file LiquidCrystal_I2C.c
+// @file fm_LiquidCrystal_I2C.c
 // This file implements a basic liquid crystal library that comes as standard
 // in the Arduino SDK but using an I2C IO extension board.
 //
 // @brief
 // This is a basic implementation of the LiquidCrystal library of the
 // Arduino SDK. The original library has been reworked in such a way that
-// this class implements the all methods to command an LCD based
+// this class implements the all methods to command an fm_LCD based
 // on the Hitachi HD44780 and compatible chipsets using I2C extension
 // backpacks such as the I2CLCDextraIO with the PCF8574* I2C IO Expander ASIC.
 //
@@ -34,8 +34,8 @@
 //#endif
 //#include <inttypes.h>
 
-//#include "I2CIO.h"
-#include "LiquidCrystal_I2C.h"
+//#include "fm_I2CIO.h"
+#include "fm_LiquidCrystal_I2C.h"
 
 // CONSTANT  definitions
 // ---------------------------------------------------------------------------
@@ -61,30 +61,30 @@
 // ---------------------------------------------------------------------------
 /*!
  @defined
- @abstract	Enable bit of the LCD
- @discussion Defines the IO of the expander connected to the LCD Enable
+ @abstract	Enable bit of the fm_LCD
+ @discussion Defines the IO of the expander connected to the fm_LCD Enable
  */
 #define EN 6  // Enable bit
 
 /*!
  @defined
- @abstract	Read/Write bit of the LCD
- @discussion Defines the IO of the expander connected to the LCD Rw pin
+ @abstract	Read/Write bit of the fm_LCD
+ @discussion Defines the IO of the expander connected to the fm_LCD Rw pin
  */
 #define RW 5  // Read/Write bit
 
 /*!
  @defined
- @abstract	Register bit of the LCD
- @discussion Defines the IO of the expander connected to the LCD Register select pin
+ @abstract	Register bit of the fm_LCD
+ @discussion Defines the IO of the expander connected to the fm_LCD Register select pin
  */
 #define RS 4  // Register select bit
 
 /*!
  @defined
- @abstract	LCD dataline allocation this library only supports 4 bit LCD control
+ @abstract	fm_LCD dataline allocation this library only supports 4 bit fm_LCD control
  mode.
- @discussion D4, D5, D6, D7 LCD data lines pin mapping of the extender module
+ @discussion D4, D5, D6, D7 fm_LCD data lines pin mapping of the extender module
  */
 #define D4 0
 #define D5 1
@@ -94,26 +94,26 @@
 
 // CONSTRUCTORS
 // ---------------------------------------------------------------------------
-LiquidCrystal_I2C::LiquidCrystal_I2C( uint8_t lcd_Addr )
+fm_LiquidCrystal_I2C::fm_LiquidCrystal_I2C( uint8_t lcd_Addr )
 {
 	config(lcd_Addr, EN, RW, RS, D4, D5, D6, D7);
 }
 
 
-LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t backlighPin,
+fm_LiquidCrystal_I2C::fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t backlighPin,
 												 t_backlighPol pol = POSITIVE)
 {
 	config(lcd_Addr, EN, RW, RS, D4, D5, D6, D7);
 	setBacklightPin(backlighPin, pol);
 }
 
-LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
+fm_LiquidCrystal_I2C::fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 												 uint8_t Rs)
 {
 	config(lcd_Addr, En, Rw, Rs, D4, D5, D6, D7);
 }
 
-LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
+fm_LiquidCrystal_I2C::fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 												 uint8_t Rs, uint8_t backlighPin,
 												 t_backlighPol pol = POSITIVE)
 {
@@ -121,14 +121,14 @@ LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 	setBacklightPin(backlighPin, pol);
 }
 
-LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
+fm_LiquidCrystal_I2C::fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 												 uint8_t Rs, uint8_t d4, uint8_t d5,
 												 uint8_t d6, uint8_t d7 )
 {
 	config(lcd_Addr, En, Rw, Rs, d4, d5, d6, d7);
 }
 
-LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
+fm_LiquidCrystal_I2C::fm_LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 												 uint8_t Rs, uint8_t d4, uint8_t d5,
 												 uint8_t d6, uint8_t d7, uint8_t backlighPin,
 												 t_backlighPol pol = POSITIVE )
@@ -142,11 +142,11 @@ LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 
 //
 // begin
-void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
+void fm_LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 {
 
 	init();	  // Initialise the I2C expander interface
-	LCD::begin ( cols, lines, dotsize );
+	fm_LCD::begin ( cols, lines, dotsize );
 }
 
 
@@ -156,7 +156,7 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 
 //
 // setBacklightPin
-void LiquidCrystal_I2C::setBacklightPin ( uint8_t value, t_backlighPol pol = POSITIVE )
+void fm_LiquidCrystal_I2C::setBacklightPin ( uint8_t value, t_backlighPol pol = POSITIVE )
 {
 	_backlightPinMask = ( 1 << value );
 	_polarity = pol;
@@ -165,7 +165,7 @@ void LiquidCrystal_I2C::setBacklightPin ( uint8_t value, t_backlighPol pol = POS
 
 //
 // setBacklight
-void LiquidCrystal_I2C::setBacklight( uint8_t value )
+void fm_LiquidCrystal_I2C::setBacklight( uint8_t value )
 {
 	// Check if backlight is available
 	// ----------------------------------------------------
@@ -192,7 +192,7 @@ void LiquidCrystal_I2C::setBacklight( uint8_t value )
 
 //
 // init
-int LiquidCrystal_I2C::init()
+int fm_LiquidCrystal_I2C::init()
 {
 	int status = 0;
 
@@ -211,7 +211,7 @@ int LiquidCrystal_I2C::init()
 
 //
 // config
-void LiquidCrystal_I2C::config (uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
+void fm_LiquidCrystal_I2C::config (uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_t Rs,
 										  uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7 )
 {
 	_Addr = lcd_Addr;
@@ -238,7 +238,7 @@ void LiquidCrystal_I2C::config (uint8_t lcd_Addr, uint8_t En, uint8_t Rw, uint8_
 
 //
 // send - write either command or data
-void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode)
+void fm_LiquidCrystal_I2C::send(uint8_t value, uint8_t mode)
 {
 	// No need to use the delay routines since the time taken to write takes
 	// longer that what is needed both for toggling and enable pin an to execute
@@ -257,11 +257,11 @@ void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode)
 
 //
 // write4bits
-void LiquidCrystal_I2C::write4bits ( uint8_t value, uint8_t mode )
+void fm_LiquidCrystal_I2C::write4bits ( uint8_t value, uint8_t mode )
 {
 	uint8_t pinMapValue = 0;
 
-	// Map the value to LCD pin mapping
+	// Map the value to fm_LCD pin mapping
 	// --------------------------------
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
@@ -285,7 +285,7 @@ void LiquidCrystal_I2C::write4bits ( uint8_t value, uint8_t mode )
 
 //
 // pulseEnable
-void LiquidCrystal_I2C::pulseEnable (uint8_t data)
+void fm_LiquidCrystal_I2C::pulseEnable (uint8_t data)
 {
 //Serial.print('d');
 //Serial.print(data);
@@ -302,14 +302,14 @@ wait(200);
 #endif
 }
 
-void LiquidCrystal_I2C::wait(uint16_t us)
+void fm_LiquidCrystal_I2C::wait(uint16_t us)
 {
 //Serial.print('w');
 //Serial.print(us);
 //Serial.print(';');
 
 #if 0
-	delayMicroseconds( us	 );
+	delayMicroseconds( us );
 #else
 	_i2cio.wait(us);
 #endif
