@@ -117,5 +117,5 @@ void setup()
 
 void loop()
 {
-	yield();
+	jm_Scheduler::yield();
 }

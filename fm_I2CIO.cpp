@@ -28,6 +28,8 @@
 
 #include <jm_Scheduler.h>
 
+#include <Arduino.h> // INPUT,OUPUT,...
+
 ////////////////////////////////////////////////////////////////////////////////
 
 void lcd_i2c_write(uint8_t data);

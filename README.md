@@ -14,6 +14,7 @@ Email: jean-marc@paratte.ch
 My enhanced fm_LiquidCrystal_I2C Arduino Library 
 
 ````
+2018-05-14: v1.0.2 - Solve OUTPUT mistake in fm_I2CIO.cpp.
 2018-04-19: v1.0.1 - Solve conflict with NewLiquidCrystal_1.3.5.
 2017-05-03: v1.0.0 - Initial commit.
 ````
@@ -51,6 +52,6 @@ See _jm_LiquidCrystal_I2C_demo_ example.
   
     void loop(void)
     {
-	jm_Scheduler::cycle();
+	jm_Scheduler::yield();
     }
 
