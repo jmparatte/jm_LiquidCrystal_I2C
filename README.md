@@ -41,17 +41,16 @@ See _jm_LiquidCrystal_I2C_demo_ example.
   
     void setup(void)
     {
-	Wire.begin();
-	twi_readFrom_wait = false; // Suppress twi_readFrom() waiting loop
-	twi_writeTo_wait = false; // Suppress twi_writeTo() waiting loop
+	    Wire.begin();
+	    twi_readFrom_wait = false; // Suppress twi_readFrom() waiting loop
+	    twi_writeTo_wait = false; // Suppress twi_writeTo() waiting loop
 
-	lcd.begin();
-	while (lcd._i2cio.yield_request()) jm_Scheduler::yield();
-      
+	    lcd.begin();
+	    while (lcd._i2cio.yield_request()) jm_Scheduler::yield();
     }
   
     void loop(void)
     {
-	jm_Scheduler::yield();
+	    jm_Scheduler::yield();
     }
 
